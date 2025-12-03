@@ -1,6 +1,5 @@
 package com.example.test_lab_week_12
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.test_lab_week_12.model.Movie
 import androidx.lifecycle.viewModelScope
@@ -32,10 +31,8 @@ class MovieViewModel(private val movieRepository: MovieRepository)
             movieRepository.fetchMovies().catch {
             // catch is a terminal operator that catches exceptions from the Flow
                 _error.value = "An exception occurred: ${it.message}"
-            }.collect {
-                // collect is a terminal operator that collects the values from the Flow
-                // the results are emitted to the StateFlow
-                _popularMovies.value = it
+            }.collect { movies ->
+                _popularMovies.value = movies.sortedByDescending { it.popularity }
             }
         }
     }
